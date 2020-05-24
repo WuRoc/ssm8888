@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.dao.ItemDao">
+
+   <!--查询所有商品信息  -->
+   <select id="getItemList" resultType="Item">
+   	 select * from tb_item
+   </select>
+   
+   <!--根据id查询商品信息  -->
+   <select id="getItemById" parameterType="Integer" resultType="Item">
+   		 select * from tb_item where id=#{id}
+   </select>
+   
+   <!--根据id更新商品信息  -->
+   <update id="updateItemById" parameterType="Item">
+       update tb_item
+       set name=#{name},price=#{price},detail=#{detail},createtime=#{createtime},pic=#{pic}
+       where id=#{id}
+   </update>
+   
+   
+   <!-- 查询符合条件的商品信息 -->
+   <!-- <select id="queryItems" parameterType="QueryVo" resultType="Item">
+      select * from tb_item
+      <where>
+         <if test="item.id!=null">
+             id=#{item.id}
+         </if>
+         <if test="item.name!=null">
+             and name  like  "%"#{item.name}"%"
+         </if>
+      </where>
+   </select> -->
+   
+   <!--删除单条商品  -->
+   <delete id="delItemById" parameterType="Integer">
+      delete from tb_item
+      where id=#{id}
+   </delete>
+   
+   <!--添加商品  -->
+   <insert id="itemAdd" parameterType="Item">
+       insert into tb_item(name,price,detail,createtime) values(#{name},#{price},#{detail},#{createtime})
+   </insert>
+   
+   <!--批量删除  -->
+   <delete id="delSelectedItems" parameterType="Integer[]">
+   	  delete from tb_item
+   	  <where>
+   	  	<foreach collection="array" item="id" open="id in (" close=")" separator=",">
+   	  		#{id}
+   	  	</foreach>
+   	  </where>
+   </delete>
+   
+   <!-- 获取符合条件的总记录数：int getTotalByQueryVO(QueryVo vo); -->
+   <select id="getTotalByQueryVO" parameterType="QueryVo" resultType="Integer">
+      select count(1) from tb_item
+      <where>
+      	 <if test="id!=null">
+             id=#{id}
+         </if>
+         <if test="name!=null">
+             and name  like  "%"#{name}"%"
+         </if>
+      </where>
+   </select>
+   
+   <!--获取符合条件的当前页数据：List<Item> getRowsByQueryVO(QueryVo vo);  -->
+   
+     <select id="getRowsByQueryVO" parameterType="QueryVo" resultType="Item">
+      select * from tb_item
+      <where>
+      	 <if test="id!=null">
+             id=#{id}
+         </if>
+         <if test="name!=null">
+             and name  like  "%"#{name}"%"
+         </if>
+      </where>
+      limit #{startNum},#{size}
+   </select>
+</mapper>
